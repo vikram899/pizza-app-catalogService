@@ -3,10 +3,16 @@ import { Request } from "express-jwt";
 import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { ProductService } from "./product-service";
-import { Attribute, PriceConfiguration, Product } from "./product-types";
+import {
+    Attribute,
+    Filter,
+    PriceConfiguration,
+    Product,
+} from "./product-types";
 import { FileData, FileStorage } from "../common/types/storage";
 import { v4 as uuidV4 } from "uuid";
 import { UploadedFile } from "express-fileupload";
+import mongoose from "mongoose";
 
 export class ProductController {
     constructor(
@@ -124,5 +130,28 @@ export class ProductController {
         } as Product);
 
         res.json({ id: updatedData?._id });
+    };
+
+    getAll = async (req: Request, res: Response) => {
+        const { q, tenantId, categoryId, isPublish } = req.query;
+
+        const filters: Filter = {};
+
+        if (isPublish === "true") filters.isPublish = true;
+
+        if (tenantId) filters.tenantId = tenantId as string;
+
+        if (
+            categoryId &&
+            mongoose.Types.ObjectId.isValid(categoryId as string)
+        ) {
+            filters.categoryId = new mongoose.Types.ObjectId(
+                categoryId as string,
+            );
+        }
+
+        const products = await this.productService.getAll(q as string, filters);
+
+        res.json(products);
     };
 }

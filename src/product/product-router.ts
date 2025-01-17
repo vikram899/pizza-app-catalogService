@@ -9,6 +9,7 @@ import fileUpload from "express-fileupload";
 import { S3Storage } from "../common/services/S3Storage";
 import createHttpError from "http-errors";
 import updateProductValidator from "./update-product-validator";
+import { asyncWrapper } from "../common/utils/wrapper";
 
 const router = express.Router();
 
@@ -47,5 +48,7 @@ router.put(
     updateProductValidator,
     productController.update,
 );
+
+router.get("/", asyncWrapper(productController.getAll));
 
 export default router;
