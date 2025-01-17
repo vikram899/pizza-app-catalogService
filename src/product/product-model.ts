@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { PriceConfiguration } from "../category/category-types";
 
 const priceConfigurationSchema = new mongoose.Schema({
     priceType: {
@@ -8,13 +7,12 @@ const priceConfigurationSchema = new mongoose.Schema({
         required: true,
     },
     availableOptions: {
-        type: Map,
-        of: Number,
+        type: [String],
         required: true,
     },
 });
 
-const attributeSchema = new mongoose.Schema<PriceConfiguration>({
+const attributeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -28,15 +26,15 @@ const attributeSchema = new mongoose.Schema<PriceConfiguration>({
 const productSchema = new mongoose.Schema(
     {
         name: {
-            type: "string",
+            type: String,
             required: true,
         },
         description: {
-            type: "string",
-            reuired: true,
+            type: String,
+            required: true,
         },
         image: {
-            type: "string",
+            type: String,
             required: true,
         },
         priceConfiguration: {
@@ -52,10 +50,10 @@ const productSchema = new mongoose.Schema(
         categoryId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
+            required: true,
         },
         isPublish: {
             type: Boolean,
-            required: false,
             default: false,
         },
     },
