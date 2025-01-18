@@ -60,13 +60,13 @@ export class ProductController {
         const newProduct = await this.productService.create({
             name,
             description,
-            priceConfiguration: parsedPriceConfiguration,
-            attributes: parsedAttributes,
+            priceConfiguration: parsedPriceConfiguration as PriceConfiguration,
+            attributes: parsedAttributes as Attribute[],
             tenantId,
             categoryId,
             image: imageName,
             isPublish,
-        } as Product);
+        });
 
         res.json({ id: newProduct._id });
     };
@@ -93,7 +93,7 @@ export class ProductController {
                 fileData: imageData.data,
             } as FileData);
 
-            await this.storage.delete(oldImage!);
+            await this.storage.delete(oldImage);
         }
 
         const {
@@ -150,8 +150,26 @@ export class ProductController {
             );
         }
 
-        const products = await this.productService.getAll(q as string, filters);
+        const products = await this.productService.getAll(
+            q as string,
+            filters,
+            {
+                page: req.query.page ? parseInt(req.query.page as string) : 1,
+                limit: req.query.limit
+                    ? parseInt(req.query.limit as string)
+                    : 10,
+            },
+        );
 
-        res.json(products);
+        const finalProducts = (products.data as Product[])?.map(
+            (product: Product) => {
+                return {
+                    ...product,
+                    image: this.storage.getObjectUri(product.image),
+                };
+            },
+        );
+
+        res.json({ ...products, data: finalProducts });
     };
 }

@@ -50,8 +50,9 @@ export class S3Storage implements FileStorage {
         await this.client.send(new DeleteObjectCommand(objectParams));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async getObjectUri(filename: string): Promise<string> {
-        throw new Error("Method not implemented.");
+    getObjectUri(filename: string): string {
+        const bucket: string = config.get("s3.bucket");
+        const region: string = config.get("s3.region");
+        return `https://${bucket}.s3.${region}.amazonaws.com/${filename}`;
     }
 }
