@@ -30,7 +30,7 @@ router.post(
         },
     }),
     productValidator,
-    productController.create,
+    asyncWrapper(productController.create),
 );
 
 router.put(
@@ -50,5 +50,9 @@ router.put(
 );
 
 router.get("/", asyncWrapper(productController.getAll));
+
+router.get("/:id", asyncWrapper(productController.get));
+
+router.delete("/:id", asyncWrapper(productController.delete));
 
 export default router;

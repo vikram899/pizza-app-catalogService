@@ -172,4 +172,35 @@ export class ProductController {
 
         res.json({ ...products, data: finalProducts });
     };
+
+    get = async (req: Request, res: Response, next: NextFunction) => {
+        const id = req.params.id;
+
+        const product = await this.productService.get(id);
+
+        if (!product) {
+            return next(createHttpError(400, "No product found"));
+        }
+
+        product.image = product.image
+            ? this.storage.getObjectUri(product.image)
+            : "";
+
+        res.json(product);
+    };
+    delete = async (req: Request, res: Response, next: NextFunction) => {
+        const id = req.params.id;
+
+        const product = await this.productService.get(id);
+
+        if (!product) {
+            return next(createHttpError(400, "No product found"));
+        }
+
+        await this.storage.delete(product.image);
+
+        await this.productService.delete(id);
+
+        res.json();
+    };
 }
