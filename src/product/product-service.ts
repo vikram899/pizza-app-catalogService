@@ -50,6 +50,7 @@ export class ProductService {
                                 name: 1,
                                 attributes: 1,
                                 priceConfiguration: 1,
+                                description: 1,
                             },
                         },
                     ],

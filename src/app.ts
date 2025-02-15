@@ -4,8 +4,20 @@ import categoryRouter from "./category/category-router";
 import productRouter from "./product/product-router";
 import cookieParser from "cookie-parser";
 import toppingRouter from "./topping/topping-router";
+import config from "config";
+import cors from "cors";
 
 const app = express();
+const adminDashboard: string = config.get<string>("ADMIN_DASHBOARD_URL");
+
+app.use(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    cors({
+        origin: [adminDashboard],
+        credentials: true,
+    }),
+);
+
 app.use(express.json());
 app.use(cookieParser());
 

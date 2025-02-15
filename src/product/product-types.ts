@@ -15,7 +15,7 @@ export interface Product {
 export interface PriceConfiguration {
     [key: string]: {
         priceType: "base" | "additional";
-        availableOptions: string[];
+        availableOptions: Record<string, number>;
     };
 }
 

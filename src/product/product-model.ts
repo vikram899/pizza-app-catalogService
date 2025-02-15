@@ -8,8 +8,8 @@ const priceConfigurationSchema = new mongoose.Schema({
         required: true,
     },
     availableOptions: {
-        type: [String],
-        required: true,
+        type: Map,
+        of: Number,
     },
 });
 
